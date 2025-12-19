@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>购物车 - 书架</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* 购物车页面特有样式 */
+        .cart-header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .cart-header h1 {
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+        
+        .cart-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .cart-items {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .cart-item {
+            display: grid;
+            grid-template-columns: 100px 2fr 1fr 1fr;
+            gap: 20px;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            transition: background 0.3s;
+        }
+        
+        .cart-item:hover {
+            background: #f9f9f9;
+        }
+        
+        .item-image img {
+            width: 80px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        
+        .item-info h4 {
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        
+        .item-author {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .item-price {
+            font-size: 18px;
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .item-quantity {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            background: #f1f1f1;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .quantity-btn:hover {
+            background: #e0e0e0;
+        }
+        
+        .quantity-value {
+            width: 50px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+        }
+        
+        .item-total {
+            font-size: 18px;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+        
+        .item-actions {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .btn-remove {
+            padding: 6px 12px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .btn-favorite {
+            padding: 6px 12px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .cart-summary {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+        
+        .summary-title {
+            font-size: 20px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            color: #666;
+        }
+        
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            margin: 25px 0;
+            padding-top: 15px;
+            border-top: 2px solid #eee;
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .btn-checkout {
+            width: 100%;
+            padding: 15px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+        
+        .btn-checkout:hover {
+            background: #219653;
+            transform: translateY(-2px);
+        }
+        
+        .promo-code {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .promo-input {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .promo-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .btn-apply {
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .empty-cart {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        .empty-cart img {
+            width: 150px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        
+        .empty-cart h3 {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .btn-shopping {
+            padding: 12px 30px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        
+        .recommended-section {
+            margin-top: 60px;
+        }
+        
+        @media (max-width: 992px) {
+            .cart-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .cart-item {
+                grid-template-columns: 80px 1fr;
+                grid-template-rows: auto auto;
+            }
+            
+            .item-price {
+                grid-column: 1;
+                grid-row: 2;
+            }
+            
+            .item-quantity {
+                grid-column: 2;
+                grid-row: 2;
+                justify-content: flex-end;
+            }
+            
+            .item-total {
+                grid-column: 1 / -1;
+                grid-row: 3;
+                text-align: right;
+                margin-top: 10px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .cart-item {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .item-image {
+                justify-self: center;
+            }
+            
+            .item-quantity {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <nav>
+            <div class="container">
+                <div class="logo">
+                    <img src="../images/logo.png" alt="书架Logo">
+                    <h1>书架</h1>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="../index.html">首页</a></li>
+                    <li><a href="category.html">图书分类</a></li>
+                    <li><a href="cart.html" style="background-color: #3498db;">购物车</a></li>
+                    <li><a href="profile.html">个人中心</a></li>
+                </ul>
+                <div class="user-actions">
+                    <button class="btn btn-login" onclick="location.href='login.html'">登录</button>
+                    <button class="btn btn-register" onclick="location.href='register.html'">注册</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- 购物车头部 -->
+    <section class="cart-header">
+        <div class="container">
+            <h1>我的购物车</h1>
+            <p>查看和管理您选择的商品</p>
+        </div>
+    </section>
+
+    <div class="container">
+        <div id="cartContent">
+            <!-- 购物车内容将通过JavaScript动态生成 -->
+        </div>
+        
+        <!-- 推荐商品 -->
+        <section class="recommended-section">
+            <h2 class="section-title">猜你喜欢</h2>
+            <div class="hot-books">
+                <!-- 推荐商品1 -->
+                <div class="book-card">
+                    <img src="../images/book1.jpg" alt="JavaScript高级程序设计" class="book-img">
+                    <div class="book-info">
+                        <h3 class="book-title">JavaScript高级程序设计</h3>
+                        <p class="book-author">作者: Nicholas C. Zakas</p>
+                        <p class="book-price">¥89.00</p>
+                        <button class="btn-buy" onclick="location.href='product-detail.html?id=1'">立即购买</button>
+                    </div>
+                </div>
+                <!-- 推荐商品2 -->
+                <div class="book-card">
+                    <img src="../images/book2.jpg" alt="CSS揭秘" class="book-img">
+                    <div class="book-info">
+                        <h3 class="book-title">CSS揭秘</h3>
+                        <p class="book-author">作者: Lea Verou</p>
+                        <p class="book-price">¥79.00</p>
+                        <button class="btn-buy" onclick="location.href='product-detail.html?id=2'">立即购买</button>
+                    </div>
+                </div>
+                <!-- 推荐商品3 -->
+                <div class="book-card">
+                    <img src="../images/book3.jpg" alt="算法导论" class="book-img">
+                    <div class="book-info">
+                        <h3 class="book-title">算法导论</h3>
+                        <p class="book-author">作者: Thomas H. Cormen</p>
+                        <p class="book-price">¥128.00</p>
+                        <button class="btn-buy" onclick="location.href='product-detail.html?id=3'">立即购买</button>
+                    </div>
+                </div>
+                <!-- 推荐商品4 -->
+                <div class="book-card">
+                    <img src="../images/book4.jpg" alt="设计心理学" class="book-img">
+                    <div class="book-info">
+                        <h3 class="book-title">设计心理学</h3>
+                        <p class="book-author">作者: Donald Norman</p>
+                        <p class="book-price">¥68.00</p>
+                        <button class="btn-buy" onclick="location.href='product-detail.html?id=4'">立即购买</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 书架图书商城. 版权所有.</p>
+            <p>本网站仅用于学习交流，不做商业用途</p>
+        </div>
+    </footer>
+
+    <script>
+        // 购物车数据（从localStorage获取）
+        let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+        
+        // 如果购物车为空，显示默认商品
+        if (cartItems.length === 0) {
+            cartItems = [
+                {
+                    title: "JavaScript高级程序设计",
+                    author: "Nicholas C. Zakas",
+                    price: 89.00,
+                    quantity: 1,
+                    image: "../images/book1.jpg"
+                },
+                {
+                    title: "CSS揭秘",
+                    author: "Lea Verou",
+                    price: 79.00,
+                    quantity: 2,
+                    image: "../images/book2.jpg"
+                },
+                {
+                    title: "算法导论",
+                    author: "Thomas H. Cormen",
+                    price: 128.00,
+                    quantity: 1,
+                    image: "../images/book3.jpg"
+                }
+            ];
+        }
+        
+        // 渲染购物车
+        function renderCart() {
+            const cartContent = document.getElementById('cartContent');
+            
+            if (cartItems.length === 0) {
+                cartContent.innerHTML = `
+                    <div class="empty-cart">
+                        <img src="../images/empty-cart.png" alt="购物车为空">
+                        <h3>您的购物车是空的</h3>
+                        <p>快去挑选心仪的图书吧！</p>
+                        <button class="btn-shopping" onclick="location.href='category.html'">去逛逛</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            let itemsHTML = '';
+            let subtotal = 0;
+            let totalQuantity = 0;
+            
+            cartItems.forEach((item, index) => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+                totalQuantity += item.quantity;
+                
+                itemsHTML += `
+                    <div class="cart-item">
+                        <div class="item-image">
+                            <img src="${item.image}" alt="${item.title}">
+                        </div>
+                        <div class="item-info">
+                            <h4>${item.title}</h4>
+                            <p class="item-author">作者: ${item.author}</p>
+                        </div>
+                        <div class="item-price">¥${item.price.toFixed(2)}</div>
+                        <div class="item-quantity">
+                            <button class="quantity-btn" onclick="updateQuantity(${index}, -1)">-</button>
+                            <input type="number" class="quantity-value" value="${item.quantity}" min="1" 
+                                   onchange="updateQuantityInput(${index}, this.value)">
+                            <button class="quantity-btn" onclick="updateQuantity(${index}, 1)">+</button>
+                        </div>
+                        <div class="item-total">¥${itemTotal.toFixed(2)}</div>
+                        <div class="item-actions">
+                            <button class="btn-favorite" onclick="addToFavorites(${index})">收藏</button>
+                            <button class="btn-remove" onclick="removeItem(${index})">删除</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            const shipping = subtotal > 100 ? 0 : 10;
+            const total = subtotal + shipping;
+            
+            cartContent.innerHTML = `
+                <div class="cart-container">
+                    <div class="cart-items">
+                        <div style="padding: 20px; border-bottom: 1px solid #eee; background: #f8f9fa;">
+                            <h3>购物车商品 (${totalQuantity}件)</h3>
+                        </div>
+                        ${itemsHTML}
+                    </div>
+                    
+                    <div class="cart-summary">
+                        <h3 class="summary-title">订单汇总</h3>
+                        
+                        <div class="summary-item">
+                            <span>商品总价</span>
+                            <span>¥${subtotal.toFixed(2)}</span>
+                        </div>
+                        
+                        <div class="summary-item">
+                            <span>运费</span>
+                            <span>${shipping === 0 ? '免运费' : '¥' + shipping.toFixed(2)}</span>
+                        </div>
+                        
+                        <div class="promo-code">
+                            <div style="font-weight: bold; color: #2c3e50;">优惠码</div>
+                            <div class="promo-input">
+                                <input type="text" id="promoCode" placeholder="输入优惠码">
+                                <button class="btn-apply" onclick="applyPromoCode()">应用</button>
+                            </div>
+                            <div id="promoMessage" style="font-size: 12px; color: #666; margin-top: 5px;"></div>
+                        </div>
+                        
+                        <div class="summary-total">
+                            <span>总计</span>
+                            <span>¥${total.toFixed(2)}</span>
+                        </div>
+                        
+                        <button class="btn-checkout" onclick="checkout()">
+                            去结算 (¥${total.toFixed(2)})
+                        </button>
+                        
+                        <div style="margin-top: 15px; font-size: 12px; color: #666; text-align: center;">
+                            <p>免费送货，订单满100元免运费</p>
+                            <p>支持7天无理由退货</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // 更新商品数量
+        function updateQuantity(index, change) {
+            const newQuantity = cartItems[index].quantity + change;
+            
+            if (newQuantity < 1) {
+                if (confirm('确定要删除这个商品吗？')) {
+                    cartItems.splice(index, 1);
+                } else {
+                    return;
+                }
+            } else {
+                cartItems[index].quantity = newQuantity;
+            }
+            
+            saveCart();
+            renderCart();
+        }
+        
+        // 通过输入框更新数量
+        function updateQuantityInput(index, value) {
+            const newQuantity = parseInt(value);
+            
+            if (isNaN(newQuantity) || newQuantity < 1) {
+                cartItems[index].quantity = 1;
+            } else if (newQuantity > 99) {
+                cartItems[index].quantity = 99;
+            } else {
+                cartItems[index].quantity = newQuantity;
+            }
+            
+            saveCart();
+            renderCart();
+        }
+        
+        // 删除商品
+        function removeItem(index) {
+            if (confirm('确定要删除这个商品吗？')) {
+                cartItems.splice(index, 1);
+                saveCart();
+                renderCart();
+            }
+        }
+        
+        // 添加到收藏夹
+        function addToFavorites(index) {
+            const item = cartItems[index];
+            let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+            
+            // 检查是否已经收藏
+            const exists = favorites.some(fav => fav.title === item.title);
+            
+            if (!exists) {
+                favorites.push(item);
+                localStorage.setItem('favorites', JSON.stringify(favorites));
+                alert('已添加到收藏夹！');
+            } else {
+                alert('该商品已经在收藏夹中了！');
+            }
+        }
+        
+        // 应用优惠码
+        function applyPromoCode() {
+            const promoCode = document.getElementById('promoCode').value;
+            const message = document.getElementById('promoMessage');
+            
+            if (promoCode.toUpperCase() === 'BOOK10') {
+                message.textContent = '优惠码已应用：享受9折优惠！';
+                message.style.color = '#27ae60';
+                
+                // 这里可以添加优惠码逻辑
+                setTimeout(() => {
+                    alert('优惠码已应用！');
+                }, 500);
+            } else if (promoCode) {
+                message.textContent = '优惠码无效，请重新输入';
+                message.style.color = '#e74c3c';
+            }
+        }
+        
+        // 结算
+        function checkout() {
+            if (cartItems.length === 0) {
+                alert('购物车为空，请先添加商品！');
+                return;
+            }
+            
+            if (confirm('确定要结算吗？')) {
+                // 这里可以跳转到结算页面
+                // 实际项目中这里会清空购物车并跳转到订单确认页面
+                localStorage.removeItem('cart');
+                alert('订单提交成功！感谢您的购买。');
+                cartItems = [];
+                renderCart();
+            }
+        }
+        
+        // 保存购物车到localStorage
+        function saveCart() {
+            localStorage.setItem('cart', JSON.stringify(cartItems));
+        }
+        
+        // 清空购物车
+        function clearCart() {
+            if (confirm('确定要清空购物车吗？')) {
+                cartItems = [];
+                saveCart();
+                renderCart();
+            }
+        }
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', renderCart);
+        
+        // 添加清空购物车按钮
+        window.onload = function() {
+            if (cartItems.length > 0) {
+                const cartHeader = document.querySelector('.cart-items > div:first-child');
+                if (cartHeader) {
+                    const clearBtn = document.createElement('button');
+                    clearBtn.textContent = '清空购物车';
+                    clearBtn.style.cssText = `
+                        padding: 8px 15px;
+                        background: #e74c3c;
+                        color: white;
+                        border: none;
+                        border-radius: 4px;
+                        cursor: pointer;
+                        float: right;
+                    `;
+                    clearBtn.onclick = clearCart;
+                    cartHeader.appendChild(clearBtn);
+                }
+            }
+        };
+    </script>
+</body>
+</html>

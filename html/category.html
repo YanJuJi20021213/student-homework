@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图书分类 - 书架</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* 分类页面特有样式 */
+        .category-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .category-header h1 {
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+        
+        .category-filter {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .filter-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .filter-group label {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .filter-select {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            min-width: 150px;
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-input {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 300px;
+        }
+        
+        .btn-search {
+            padding: 8px 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .book-item {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .book-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .book-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+        
+        .book-content {
+            padding: 20px;
+        }
+        
+        .book-category {
+            color: #3498db;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        
+        .book-rating {
+            color: #f39c12;
+            font-size: 14px;
+            margin: 8px 0;
+        }
+        
+        .book-description {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 10px 0;
+            height: 40px;
+            overflow: hidden;
+        }
+        
+        .book-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+        
+        .book-author {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 40px 0;
+        }
+        
+        .page-btn {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .page-btn:hover {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        
+        .page-btn.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        
+        @media (max-width: 1200px) {
+            .books-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .books-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .filter-options {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+            
+            .search-input {
+                flex: 1;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .books-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <nav>
+            <div class="container">
+                <div class="logo">
+                    <img src="../images/logo.png" alt="书架Logo">
+                    <h1>书架</h1>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="../index.html">首页</a></li>
+                    <li><a href="category.html" style="background-color: #3498db;">图书分类</a></li>
+                    <li><a href="cart.html">购物车</a></li>
+                    <li><a href="profile.html">个人中心</a></li>
+                </ul>
+                <div class="user-actions">
+                    <button class="btn btn-login" onclick="location.href='login.html'">登录</button>
+                    <button class="btn btn-register" onclick="location.href='register.html'">注册</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- 分类头部 -->
+    <section class="category-header">
+        <div class="container">
+            <h1>探索知识海洋</h1>
+            <p>选择您感兴趣的图书分类，发现更多好书</p>
+        </div>
+    </section>
+
+    <!-- 分类筛选 -->
+    <section class="category-filter">
+        <div class="container">
+            <div class="filter-options">
+                <div class="filter-group">
+                    <label>分类:</label>
+                    <select class="filter-select" id="categorySelect">
+                        <option value="all">所有分类</option>
+                        <option value="computer">计算机</option>
+                        <option value="literature">文学</option>
+                        <option value="history">历史</option>
+                        <option value="science">科普</option>
+                        <option value="economy">经济</option>
+                        <option value="art">艺术</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>排序:</label>
+                    <select class="filter-select" id="sortSelect">
+                        <option value="default">默认排序</option>
+                        <option value="price-low">价格从低到高</option>
+                        <option value="price-high">价格从高到低</option>
+                        <option value="sales">销量优先</option>
+                        <option value="rating">评分优先</option>
+                    </select>
+                </div>
+                
+                <div class="search-box">
+                    <input type="text" class="search-input" id="searchInput" placeholder="搜索图书名称或作者...">
+                    <button class="btn-search" id="searchBtn">搜索</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 图书列表 -->
+    <section class="books-section">
+        <div class="container">
+            <h2 class="section-title">精选图书</h2>
+            
+            <div class="books-grid" id="booksGrid">
+                <!-- 图书项目将通过JavaScript动态生成 -->
+            </div>
+            
+            <!-- 分页 -->
+            <div class="pagination" id="pagination">
+                <!-- 分页按钮将通过JavaScript动态生成 -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 书架图书商城. 版权所有.</p>
+            <p>本网站仅用于学习交流，不做商业用途</p>
+        </div>
+    </footer>
+
+    <script>
+        // 图书数据
+        const books = [
+            {
+                id: 1,
+                title: "JavaScript高级程序设计",
+                author: "Nicholas C. Zakas",
+                category: "computer",
+                price: 89.00,
+                rating: 4.8,
+                sales: 1250,
+                image: "../images/book1.jpg",
+                description: "JavaScript经典著作，全面深入讲解JavaScript核心技术"
+            },
+            {
+                id: 2,
+                title: "CSS揭秘",
+                author: "Lea Verou",
+                category: "computer",
+                price: 79.00,
+                rating: 4.7,
+                sales: 980,
+                image: "../images/book2.jpg",
+                description: "CSS魔法书，47个CSS技巧助力前端开发"
+            },
+            {
+                id: 3,
+                title: "算法导论",
+                author: "Thomas H. Cormen",
+                category: "computer",
+                price: 128.00,
+                rating: 4.9,
+                sales: 1560,
+                image: "../images/book3.jpg",
+                description: "算法领域经典教材，程序员的必读之作"
+            },
+            {
+                id: 4,
+                title: "设计心理学",
+                author: "Donald Norman",
+                category: "art",
+                price: 68.00,
+                rating: 4.6,
+                sales: 890,
+                image: "../images/book4.jpg",
+                description: "设计思维必读，深入理解用户体验设计"
+            },
+            {
+                id: 5,
+                title: "百年孤独",
+                author: "加西亚·马尔克斯",
+                category: "literature",
+                price: 55.00,
+                rating: 4.9,
+                sales: 2300,
+                image: "../images/book1.jpg",
+                description: "魔幻现实主义文学代表作，震撼心灵"
+            },
+            {
+                id: 6,
+                title: "人类简史",
+                author: "尤瓦尔·赫拉利",
+                category: "history",
+                price: 78.00,
+                rating: 4.7,
+                sales: 1870,
+                image: "../images/book2.jpg",
+                description: "从动物到上帝，重新认识人类历史"
+            },
+            {
+                id: 7,
+                title: "时间简史",
+                author: "史蒂芬·霍金",
+                category: "science",
+                price: 65.00,
+                rating: 4.8,
+                sales: 1450,
+                image: "../images/book3.jpg",
+                description: "探索宇宙奥秘，科普经典之作"
+            },
+            {
+                id: 8,
+                title: "经济学原理",
+                author: "曼昆",
+                category: "economy",
+                price: 99.00,
+                rating: 4.6,
+                sales: 1120,
+                image: "../images/book4.jpg",
+                description: "经济学入门经典，通俗易懂"
+            },
+            {
+                id: 9,
+                title: "Vue.js设计与实现",
+                author: "霍春阳",
+                category: "computer",
+                price: 89.00,
+                rating: 4.8,
+                sales: 760,
+                image: "../images/book1.jpg",
+                description: "深入剖析Vue.js框架设计与实现原理"
+            },
+            {
+                id: 10,
+                title: "React进阶之路",
+                author: "徐超",
+                category: "computer",
+                price: 75.00,
+                rating: 4.7,
+                sales: 680,
+                image: "../images/book2.jpg",
+                description: "React技术栈全面解析，进阶必备"
+            },
+            {
+                id: 11,
+                title: "活着",
+                author: "余华",
+                category: "literature",
+                price: 35.00,
+                rating: 4.9,
+                sales: 2980,
+                image: "../images/book3.jpg",
+                description: "中国当代文学经典，感人至深"
+            },
+            {
+                id: 12,
+                title: "艺术的故事",
+                author: "贡布里希",
+                category: "art",
+                price: 188.00,
+                rating: 4.8,
+                sales: 540,
+                image: "../images/book4.jpg",
+                description: "艺术史经典著作，带你走进艺术世界"
+            }
+        ];
+
+        // 当前页码和每页显示数量
+        let currentPage = 1;
+        const booksPerPage = 8;
+        let filteredBooks = [...books];
+
+        // 生成评分星标
+        function generateRatingStars(rating) {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 >= 0.5;
+            let starsHtml = '';
+            
+            for (let i = 1; i <= 5; i++) {
+                if (i <= fullStars) {
+                    starsHtml += '★';
+                } else if (i === fullStars + 1 && hasHalfStar) {
+                    starsHtml += '☆';
+                } else {
+                    starsHtml += '☆';
+                }
+            }
+            return `<span>${starsHtml} ${rating}</span>`;
+        }
+
+        // 渲染图书列表
+        function renderBooks() {
+            const booksGrid = document.getElementById('booksGrid');
+            const startIndex = (currentPage - 1) * booksPerPage;
+            const endIndex = startIndex + booksPerPage;
+            const booksToShow = filteredBooks.slice(startIndex, endIndex);
+            
+            booksGrid.innerHTML = '';
+            
+            booksToShow.forEach(book => {
+                const bookElement = document.createElement('div');
+                bookElement.className = 'book-item';
+                bookElement.innerHTML = `
+                    <img src="${book.image}" alt="${book.title}" class="book-image">
+                    <div class="book-content">
+                        <div class="book-category">${book.category === 'computer' ? '计算机' : 
+                                                        book.category === 'literature' ? '文学' : 
+                                                        book.category === 'history' ? '历史' : 
+                                                        book.category === 'science' ? '科普' : 
+                                                        book.category === 'economy' ? '经济' : '艺术'}</div>
+                        <h3 class="book-title">${book.title}</h3>
+                        <div class="book-author">作者: ${book.author}</div>
+                        <div class="book-rating">${generateRatingStars(book.rating)}</div>
+                        <p class="book-description">${book.description}</p>
+                        <div class="book-meta">
+                            <div class="book-price">¥${book.price.toFixed(2)}</div>
+                            <button class="btn-buy" onclick="location.href='product-detail.html?id=${book.id}'">查看详情</button>
+                        </div>
+                    </div>
+                `;
+                booksGrid.appendChild(bookElement);
+            });
+            
+            renderPagination();
+        }
+
+        // 渲染分页
+        function renderPagination() {
+            const totalPages = Math.ceil(filteredBooks.length / booksPerPage);
+            const pagination = document.getElementById('pagination');
+            
+            pagination.innerHTML = '';
+            
+            // 上一页按钮
+            if (currentPage > 1) {
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'page-btn';
+                prevBtn.textContent = '上一页';
+                prevBtn.onclick = () => {
+                    currentPage--;
+                    renderBooks();
+                    window.scrollTo({ top: 600, behavior: 'smooth' });
+                };
+                pagination.appendChild(prevBtn);
+            }
+            
+            // 页码按钮
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+                pageBtn.textContent = i;
+                pageBtn.onclick = () => {
+                    currentPage = i;
+                    renderBooks();
+                    window.scrollTo({ top: 600, behavior: 'smooth' });
+                };
+                pagination.appendChild(pageBtn);
+            }
+            
+            // 下一页按钮
+            if (currentPage < totalPages) {
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'page-btn';
+                nextBtn.textContent = '下一页';
+                nextBtn.onclick = () => {
+                    currentPage++;
+                    renderBooks();
+                    window.scrollTo({ top: 600, behavior: 'smooth' });
+                };
+                pagination.appendChild(nextBtn);
+            }
+        }
+
+        // 筛选图书
+        function filterBooks() {
+            const category = document.getElementById('categorySelect').value;
+            const sortBy = document.getElementById('sortSelect').value;
+            const searchText = document.getElementById('searchInput').value.toLowerCase();
+            
+            // 根据分类筛选
+            if (category === 'all') {
+                filteredBooks = [...books];
+            } else {
+                filteredBooks = books.filter(book => book.category === category);
+            }
+            
+            // 根据搜索文本筛选
+            if (searchText) {
+                filteredBooks = filteredBooks.filter(book => 
+                    book.title.toLowerCase().includes(searchText) || 
+                    book.author.toLowerCase().includes(searchText)
+                );
+            }
+            
+            // 排序
+            filteredBooks.sort((a, b) => {
+                switch (sortBy) {
+                    case 'price-low':
+                        return a.price - b.price;
+                    case 'price-high':
+                        return b.price - a.price;
+                    case 'sales':
+                        return b.sales - a.sales;
+                    case 'rating':
+                        return b.rating - a.rating;
+                    default:
+                        return 0;
+                }
+            });
+            
+            currentPage = 1;
+            renderBooks();
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            renderBooks();
+            
+            // 绑定筛选器事件
+            document.getElementById('categorySelect').addEventListener('change', filterBooks);
+            document.getElementById('sortSelect').addEventListener('change', filterBooks);
+            document.getElementById('searchBtn').addEventListener('click', filterBooks);
+            
+            // 搜索框回车事件
+            document.getElementById('searchInput').addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    filterBooks();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

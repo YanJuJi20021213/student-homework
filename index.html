@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>书架 - 图书商城</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <nav>
+            <div class="container">
+                <div class="logo">
+                    <img src="images/logo.png" alt="书架Logo">
+                    <h1>书架</h1>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="html/category.html">图书分类</a></li>
+                    <li><a href="html/cart.html">购物车</a></li>
+                    <li><a href="html/profile.html">个人中心</a></li>
+                </ul>
+                <div class="user-actions">
+                    <button class="btn btn-login" onclick="location.href='html/login.html'">登录</button>
+                    <button class="btn btn-register" onclick="location.href='html/register.html'">注册</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- 焦点图轮播 -->
+    <section class="banner">
+        <div class="container">
+            <img src="images/banner1.jpg" alt="图书促销" class="banner-slide">
+        </div>
+    </section>
+
+    <!-- 热销图书 -->
+    <section class="hot-section">
+        <div class="container">
+            <h2 class="section-title">热销图书</h2>
+            <div class="hot-books">
+                <!-- 图书1 -->
+                <div class="book-card">
+                    <img src="images/book1.jpg" alt="JavaScript高级程序设计" class="book-img">
+                    <div class="book-info">
+                        <h3 class="book-title">JavaScript高级程序设计</h3>
+                        <p class="book-author">作者: Nicholas C. Zakas</p>
+                        <p class="book-price">¥89.00</p>
+                        <button class="btn-buy" onclick="location.href='html/product-detail.html'">立即购买</button>
+                    </div>
+                </div>
+                <!-- 图书2 -->
+                <div class="book-card">
+                    <img src="images/book2.jpg" alt="CSS揭秘" class="book-img">
+                    <div class="book-info">
+                        <h3 class="book-title">CSS揭秘</h3>
+                        <p class="book-author">作者: Lea Verou</p>
+                        <p class="book-price">¥79.00</p>
+                        <button class="btn-buy" onclick="location.href='html/product-detail.html'">立即购买</button>
+                    </div>
+                </div>
+                <!-- 图书3 -->
+                <div class="book-card">
+                    <img src="images/book3.jpg" alt="算法导论" class="book-img">
+                    <div class="book-info">
+                        <h3 class="book-title">算法导论</h3>
+                        <p class="book-author">作者: Thomas H. Cormen</p>
+                        <p class="book-price">¥128.00</p>
+                        <button class="btn-buy" onclick="location.href='html/product-detail.html'">立即购买</button>
+                    </div>
+                </div>
+                <!-- 图书4 -->
+                <div class="book-card">
+                    <img src="images/book4.jpg" alt="设计心理学" class="book-img">
+                    <div class="book-info">
+                        <h3 class="book-title">设计心理学</h3>
+                        <p class="book-author">作者: Donald Norman</p>
+                        <p class="book-price">¥68.00</p>
+                        <button class="btn-buy" onclick="location.href='html/product-detail.html'">立即购买</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 图书分类 -->
+    <section class="category-section">
+        <div class="container">
+            <h2 class="section-title">图书分类</h2>
+            <div class="categories">
+                <div class="category-item" onclick="location.href='html/category.html?type=computer'">
+                    <img src="images/category1.jpg" alt="计算机" class="category-img">
+                    <h3>计算机</h3>
+                </div>
+                <div class="category-item" onclick="location.href='html/category.html?type=literature'">
+                    <img src="images/category2.jpg" alt="文学" class="category-img">
+                    <h3>文学</h3>
+                </div>
+                <div class="category-item" onclick="location.href='html/category.html?type=history'">
+                    <img src="images/category2.jpg" alt="历史" class="category-img">
+                    <h3>历史</h3>
+                </div>
+                <div class="category-item" onclick="location.href='html/category.html?type=science'">
+                    <img src="images/category1.jpg" alt="科普" class="category-img">
+                    <h3>科普</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系我们 -->
+    <section class="contact">
+        <div class="container">
+            <div class="contact-info">
+                <h3>联系我们</h3>
+                <p>地址: 广东省东莞市图书大厦</p>
+                <p>电话: 010-12345678</p>
+                <p>邮箱: contact@bookstore.com</p>
+                <p>工作时间: 周一至周五 9:00-18:00</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 书架图书商城. 版权所有.</p>
+            <p>本网站仅用于学习交流，不做商业用途</p>
+        </div>
+    </footer>
+
+    <script>
+        // 简单的轮播图效果
+        let currentSlide = 0;
+        const slides = ['images/banner1.jpg', 'images/banner2.jpg'];
+        
+        function changeSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            document.querySelector('.banner-slide').src = slides[currentSlide];
+        }
+        
+        // 每5秒切换一次
+        setInterval(changeSlide, 5000);
+    </script>
+</body>
+</html>

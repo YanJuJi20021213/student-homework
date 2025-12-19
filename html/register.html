@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册 - 书架</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="container">
+                <div class="logo">
+                    <img src="../images/logo.png" alt="书架Logo">
+                    <h1>书架</h1>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="../index.html">首页</a></li>
+                    <li><a href="category.html">图书分类</a></li>
+                    <li><a href="cart.html">购物车</a></li>
+                    <li><a href="profile.html">个人中心</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="form-container">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #2c3e50;">用户注册</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="reg-username">用户名 *</label>
+                    <input type="text" id="reg-username" name="username" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reg-password">密码 *</label>
+                    <input type="password" id="reg-password" name="password" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reg-confirm-password">确认密码 *</label>
+                    <input type="password" id="reg-confirm-password" name="confirm-password" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>性别 *</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="gender" value="male" checked> 男
+                        </label>
+                        <label>
+                            <input type="radio" name="gender" value="female"> 女
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reg-phone">手机号 *</label>
+                    <input type="tel" id="reg-phone" name="phone" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reg-email">邮箱 *</label>
+                    <input type="email" id="reg-email" name="email" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <button type="submit" class="btn-submit">注册</button>
+                </div>
+                
+                <div class="form-link">
+                    <p>已有账号？ <a href="login.html">立即登录</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 书架图书商城. 版权所有.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const password = document.getElementById('reg-password').value;
+            const confirmPassword = document.getElementById('reg-confirm-password').value;
+            
+            if (password !== confirmPassword) {
+                alert('两次输入的密码不一致！');
+                return;
+            }
+            
+            alert('注册成功！');
+            window.location.href = 'login.html';
+        });
+    </script>
+</body>
+</html>
